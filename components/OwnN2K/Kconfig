@@ -1,0 +1,23 @@
+menu "NMEA2000 (CAN) Configuration"
+
+    config ESP32_CAN_TX_PIN
+        int "CAN Tx GPIO number"
+        range 0 34
+        default 5
+        help
+            GPIO number (IOxx) for CAN bus Tx line.  Connect the TX signal to your CAN transceiver.
+
+            Some GPIOs are used for other purposes (flash connections, etc.) and cannot be used.
+
+            GPIOs 35-39 are input-only so cannot be used as outputs.
+
+    config ESP32_CAN_RX_PIN
+        int "CAN Rx GPIO number"
+        range 0 39
+        default 35
+        help
+            GPIO number (IOxx) for CAN bus Rx line.  Connect the RX signal to your CAN transceiver.
+
+            Some GPIOs are used for other purposes (flash connections, etc.) and cannot be used.
+
+endmenu
