@@ -1,4 +1,4 @@
-| Supported Targets | ESP32 [![builds](https://github.com/phatpaul/NMEA2000_switchbank_example_esp-idf/actions/workflows/main.yml/badge.svg)](https://github.com/phatpaul/NMEA2000_switchbank_example_esp-idf/actions/workflows/main.yml) | ESP32-C2 | ESP32-C3 | ESP32-S2 | ESP32-S3 |
+| Supported Targets | ESP32 | ESP32-C2 | ESP32-C3 | ESP32-S2 | ESP32-S3 |
 | ----------------- | ----- | -------- | -------- | -------- | -------- |
 
 # NMEA2000 Simple Wind monitor using esp idf
