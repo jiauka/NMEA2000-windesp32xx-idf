@@ -1,1 +1,2 @@
-#
+# NMEA2000 library needs a fast tick
+CONFIG_FREERTOS_HZ=1000
