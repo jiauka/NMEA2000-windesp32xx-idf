@@ -7,9 +7,9 @@
 #include <N2kMsg.h>
 #include <NMEA2000.h> // https://github.com/ttlappalainen/NMEA2000
 #include "sdkconfig.h"
-#define ESP32_CAN_TX_PIN (gpio_num_t) GPIO_NUM_5 
-#define ESP32_CAN_RX_PIN (gpio_num_t) GPIO_NUM_4
-#include <NMEA2000_esp32xx.h> // https://github.com/ttlappalainen/NMEA2000_esp32
+#define ESP32_CAN_TX_PIN (gpio_num_t) CONFIG_ESP32_CAN_TX_PIN 
+#define ESP32_CAN_RX_PIN (gpio_num_t) CONFIG_ESP32_CAN_RX_PIN
+#include <NMEA2000_esp32xx.h> // https://github.com/jiauka/NMEA2000_esp32xx
 #include "N2kMessages.h"
 #include "ESP32N2kStream.h"
 
@@ -30,7 +30,7 @@ const unsigned long TransmitMessages[] PROGMEM={130306L,0};
 // Setup periods according PGN definition (see comments on IsDefaultSingleFrameMessage and
 // IsDefaultFastPacketMessage) and message first start offsets. Use a bit different offset for
 // each message so they will not be sent at same time.
-tN2kSyncScheduler WindScheduler(false,100,500);
+tN2kSyncScheduler WindScheduler(false,1000,500); // Send wind data every 1s
 
 // *****************************************************************************
 // Call back for NMEA2000 open. This will be called, when library starts bus communication.
@@ -111,14 +111,18 @@ void N2K_task(void *pvParameters)
   // I originally had problem to use same Serial stream for reading and sending.
   // It worked for a while, but then stopped. Later it started to work.
 
+#if (configTICK_RATE_HZ != 1000)
+#warning "set FreeRTOS tick rate to 1000Hz in menuconfig!"
+  ESP_LOGW(TAG, "set FreeRTOS tick rate to 1000Hz in menuconfig!");
+#endif
+
     for (;;)
     {
         // put your main code here, to run repeatedly:
-//        TaskN2kBinStatus();
-  SendN2kWind();
+        static TickType_t pxPreviousWakeTime = 0;
+        vTaskDelayUntil(&pxPreviousWakeTime, 1); // yield until next tick (should be 1ms) so other tasks can do stuff
+        SendN2kWind();
         NMEA2000.ParseMessages();
-        vTaskDelay(10UL / portTICK_PERIOD_MS);
-
     }
     vTaskDelete(NULL); // should never get here...
 }
